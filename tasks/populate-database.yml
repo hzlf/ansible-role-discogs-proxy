@@ -1,0 +1,30 @@
+---
+
+# Get latest available dump
+#  radds {{ discogs_dump_proxy }}LATEST
+#  and check for the latest available version
+- name: get latest dump key
+  action: uri url={{ discogs_dump_proxy | replace('ftp://', 'http://') }}LATEST return_content=yes
+  register: latest_key
+
+- name: set dump base path
+  set_fact:
+    discogs_dump_base_url: "{{ discogs_dump_proxy }}{{ latest_key.content  | replace('\n', '') }}/"
+    discogs_dump_base_dir: "{{ discogs_dump_directory }}{{ latest_key.content  | replace('\n', '') }}/"
+
+- name: ensure dump directory is available
+  file: path={{ discogs_dump_base_url }} state=directory
+
+- name: download dump files if not present
+  get_url: url={{ discogs_dump_base_url }}{{ item }} dest={{ discogs_dump_base_dir }}{{ item }}
+  with_items:
+   - mbdump.tar.bz2
+   - mbdump-editor.tar.bz2
+   - mbdump-derived.tar.bz2
+  #changed_when: False
+
+
+- name: load initial db dumps (./admin/InitDb.pl)
+  command: >
+    ./admin/InitDb.pl --createdb --import {{ discogs_dump_directory }}mbdump*.tar.bz2 --echo
+    chdir={{ discogs_install_directory }}

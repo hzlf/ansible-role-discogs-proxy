@@ -1,0 +1,9 @@
+---
+
+- name: add supervisord config (for plackup/fcgi)
+  template: src=files/discogs.supervisord.conf
+            dest=/etc/supervisor/conf.d/discogs.conf
+
+- name: restart supervisord processes
+  supervisorctl: name='discogs-proxy' state=restarted
+  changed_when: false

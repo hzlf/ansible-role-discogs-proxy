@@ -1,0 +1,32 @@
+---
+
+# users & groups
+- name: create group
+  group: name={{ discogs_group }} state=present gid={{ discogs_gid }}
+
+- name: create user
+  user: name={{ discogs_user }}
+        shell=/bin/bash
+        uid={{ discogs_uid }}
+        group={{ discogs_group }}
+        groups="sudo"
+
+- name: create log directory
+  file: path={{ discogs_log_directory }} state=directory
+
+- include: common.yml
+  tags: common
+  become: yes
+  when: "{{ discogs_include_common }}"
+
+#- include: packages.yml
+#  tags: packages
+#  become: yes
+#
+#- include: install-server.yml
+#  tags: server
+#  become: yes
+#
+#- include: install-service.yml
+#  tags: service
+#  become: yes

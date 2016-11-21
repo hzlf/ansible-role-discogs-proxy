@@ -1,0 +1,19 @@
+galaxy_info:
+  author: Jonas Ohrstrom
+  description: Ansible role for Discogs proxy-server
+  company: hazelfire llc
+  issue_tracker_url: https://github.com/hzlf/ansible-role-discogs-proxy/issues
+  license: MIT
+  min_ansible_version: 2.0
+  github_branch: master
+  platforms:
+  - name: Debian
+    versions:
+    - jessie
+  categories:
+  - database
+  - system
+
+  galaxy_tags: ['discogs', 'proxy', 'server']
+
+dependencies: []

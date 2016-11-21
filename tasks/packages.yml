@@ -1,0 +1,31 @@
+---
+
+- name: Update apt cache
+  apt: update_cache=yes cache_valid_time=3600
+  tags: packages
+
+- name: ensure git-core is installed
+  apt: pkg=git-core state=present
+
+- name: ensure memcached is installed
+  apt: pkg=memcached state=present
+
+- name: ensure build-essential is installed
+  apt: pkg=build-essential state=present
+
+- name: ensure memcached is installed
+  apt: pkg=memcached state=present
+
+- name: ensure django project dependencies are installed
+  apt: "pkg={{ item }} state=present"
+  with_items:
+   - libxml2-dev
+   - libmagic-dev
+  tags: packages
+  changed_when: False
+
+- name: Ensure pip is installed
+  easy_install: name=pip
+
+- name: Ensure virtualenv is installed
+  easy_install: name=virtualenv

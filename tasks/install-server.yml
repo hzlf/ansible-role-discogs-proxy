@@ -1,0 +1,88 @@
+---
+
+- name: chekout discogs-proxy repository
+  git: repo={{ discogs_git_repository }}
+       dest={{ discogs_install_directory }}
+       version={{ discogs_git_version }}
+       depth=1
+       accept_hostkey=yes
+       force=yes
+  register: discogs_repository
+
+
+- name: Configure virtualenv with requirements
+  pip: virtualenv={{ discogs_install_directory }}/env
+       requirements={{ discogs_install_directory }}/website/requirements/requirements.txt
+
+- name: add django local-settings file
+  template: src=files/local_settings.py
+            dest={{ discogs_install_directory }}/website/project/local_settings.py
+
+- django_manage: >
+      command=syncdb
+      app_path={{ discogs_install_directory }}/website/
+      settings=project.settings
+      virtualenv={{ discogs_install_directory }}/env
+
+- django_manage: >
+      command=migrate
+      app_path={{ discogs_install_directory }}/website/
+      settings=project.settings
+      virtualenv={{ discogs_install_directory }}/env
+
+#- name: add DBDefs.pm config file
+#  template: src=files/DBDefs-slave.pm
+#            dest={{ discogs_install_directory }}/lib/DBDefs.pm
+#
+#- name: enable local::lib in ~/.bashrc
+#  lineinfile: dest=~/.bashrc line="eval $( perl -Mlocal::lib )"
+#
+#- name: install dependencies (cpanm)
+#  command: >
+#    cpanm --installdeps --notest .
+#    chdir={{ discogs_install_directory }}
+#  when: discogs_repository.changed
+#
+#- name: install dependencies (npm)
+#  command: >
+#    npm install
+#    chdir={{ discogs_install_directory }}
+#  when: discogs_repository.changed
+#
+#- name: compile assets (npm/gulp)
+#  command: >
+#    ./script/compile_resources.sh
+#    chdir={{ discogs_install_directory }}
+#  when: discogs_repository.changed
+#
+#- name: build postgresql-discogs-unaccent
+#  command: >
+#    make
+#    chdir={{ discogs_install_directory }}/postgresql-discogs-unaccent
+#  when: discogs_repository.changed
+#
+#- name: install postgresql-discogs-unaccent
+#  command: >
+#    make install
+#    chdir={{ discogs_install_directory }}/postgresql-discogs-unaccent
+#  when: discogs_repository.changed
+#
+#- name: build postgresql-discogs-collate
+#  command: >
+#    make
+#    chdir={{ discogs_install_directory }}/postgresql-discogs-collate
+#  when: discogs_repository.changed
+#
+#- name: install postgresql-discogs-collate
+#  command: >
+#    make install
+#    chdir={{ discogs_install_directory }}/postgresql-discogs-collate
+#  when: discogs_repository.changed
+#
+#- name: configure database access - pg_hba.conf
+#  lineinfile: dest=/etc/postgresql/9.4/main/pg_hba.conf regexp="^Listen " insertafter="^# TYPE  DATABASE" line="local    {{ discogs_db_name }}    {{ discogs_db_username }}    ident    map=mb_map"
+#
+#- name: configure database access - pg_ident.conf
+#  lineinfile: dest=/etc/postgresql/9.4/main/pg_ident.conf regexp="^Listen " insertafter="^# MAPNAME" line="mb_map    www-user    {{ discogs_db_password }}"
+#
+

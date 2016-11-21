@@ -1,0 +1,38 @@
+---
+
+# 'common' settings & packages
+#  helpfull basic settings for a minimal installation (locales, timezone etc.). when using this role in an existing
+#  playbook you maybe want to skip this bits...
+#
+discogs_include_common: yes
+
+discogs_user: discogs
+discogs_uid: 2000
+discogs_group: discogs
+discogs_gid: 2000
+
+discogs_git_repository: https://ohrstrom@lab.hazelfire.com/hazelfire/dgs-proxy.git
+discogs_git_version: master
+
+# hostname (likely an f.q.d.n)
+#
+discogs_hostname: discogs-proxy.local
+
+discogs_install_directory: /srv/discogs-proxy
+discogs_log_directory: /var/log/discogs
+
+discogs_db_name: "discogs_db"
+discogs_db_username: "discogs"
+discogs_db_password: "discogs"
+
+discogs_api_key: "***"
+discogs_api_secret: "***"
+discogs_api_access_token: "***"
+discogs_api_access_secret: "***"
+
+django_secret_key: "hjasgdjkhagsjdhgajkhsgdjkagjshkdg"
+
+# install local nginx instance
+#  disable if you want to configure a reverse-proxy throgh an existing webserver
+#
+discogs_include_nginx: yes
