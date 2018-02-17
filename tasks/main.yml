@@ -19,14 +19,14 @@
   become: yes
   when: "{{ discogs_include_common }}"
 
-#- include: packages.yml
-#  tags: packages
-#  become: yes
-#
-#- include: install-server.yml
-#  tags: server
-#  become: yes
-#
-#- include: install-service.yml
-#  tags: service
-#  become: yes
+- include: packages.yml
+  tags: packages
+  become: yes
+
+- include: install-server.yml
+  tags: server
+  become: yes
+
+- include: install-service.yml
+  tags: service
+  become: yes
